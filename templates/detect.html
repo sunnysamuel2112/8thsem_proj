@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Face Emotion Detection</title>
+    </head>
+
+    <body>
+        <h1>Face Emotion Detection</h1>
+        <canvas id="canvas"></canvas>
+        <ul id="predictions"></ul>
+        <button onclick="quit()">Quit</button>
+        <script>
+            var canvas = document.getElementById('canvas');
+            var context = canvas.getContext('2d');
+            var predictions = document.getElementById('predictions');
+
+            var eventSource = new EventSource('/detect_faces');
+            eventSource.onmessage = function (event) {
+                var data = JSON.parse(event.data);
+                var frame = new Image();
+                frame.onload = function () {
+                    canvas.width = frame.width;
+                    canvas.height = frame.height;
+                    context.drawImage(frame, 0, 0);
+                };
+                frame.src = 'data:image/jpeg;base64,' + btoa(String.fromCharCode.apply(null, new Uint8Array(data.frame)));
+
+                predictions.innerHTML = '';
+                for (var i = 0; i < data.predictions.length; i++) {
+                    var li = document.createElement('li');
+                    var text = document.createTextNode(data.predictions[i]);
+                    li.appendChild(text);
+                    predictions.appendChild(li);
+                }
+            };
+
+            function quit() {
+                eventSource.close();
+            }
+        </script>
+    </body>
+
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/github.css') }}">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <header class="Header">
+        <div class="Header-item">
+            <a class="Header-link" href="/">
+                <svg height="32" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M8 .25a7.75 7.75 0 0 0-2.457 15.121c.387.071.527-.168.527-.371 0-.184-.007-.672-.011-1.319-2.154.468-2.614-1.041-2.614-1.041a2.05 2.05 0 0 0-.857-1.13c-.703-.481.054-.472.054-.472a1.622 1.622 0 0 1 1.178.795 1.643 1.643 0 0 0 2.242.639 1.653 1.653 0 0 1 .49-1.032c-1.71-.194-3.5-.855-3.5-3.804a2.988 2.988 0 0 1 .795-2.078 2.777 2.777 0 0 1 .075-2.054s.652-.209 2.14.795a7.438 7.438 0 0 1 4.005 And here's the updated "home.html" file that extends the "base.html" template:
+
+```html
+{% extends 'base.html' %}
+
+{% block title %}
+    Emotion Recognition
+{% endblock %}
+
+{% block content %}
+    <div class="container-lg my-4">
+        <h1>Emotion Recognition</h1>
+        <form action="/detect">
+            <button class="btn btn-primary">Recognize</button>
+        </form>
+    </div>
+{% endblock %}
