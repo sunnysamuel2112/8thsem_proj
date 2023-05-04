@@ -48,7 +48,7 @@ def detect_faces():
     cv2.destroyAllWindows()
 
 
-@app.route('/detect')
+@app.route('/')
 def video_feed():
     return Response(detect_faces(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
