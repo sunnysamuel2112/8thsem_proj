@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Emotion Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Emotion Detection</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="image">
+        <button type="submit" >Recognize</button>
+    </form>
+    {% if results %}
+        <h2>Results:</h2>
+        <ul>
+        {% for result in results %}
+            <li>{{ result }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
