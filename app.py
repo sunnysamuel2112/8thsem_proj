@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, request, Response
+
 from deepface import DeepFace
 
 app = Flask(__name__)
@@ -12,6 +13,40 @@ face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 @app.route('/')
 def home():
     return render_template('index.html')
+
+
+# Define the recognize function
+@app.route('/', methods=['POST'])
+def recognize():
+    if request.method == 'POST':
+        # Get the uploaded image from the request
+        image = request.files['image'].read()
+
+        # Convert the image to a NumPy array
+        npimg = np.frombuffer(image, np.uint8)
+        img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
+
+        # Convert the image to grayscale
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        # Detect faces in the grayscale image
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+
+        # Analyze each face using DeepFace
+        results = []
+        for (x, y, w, h) in faces:
+            face_cropped = img[y:y+h, x:x+w]
+            predictions = DeepFace.analyze(face_cropped, actions=['emotion'], enforce_detection=False)
+
+            # Add the dominant emotion to the results list
+            dominant_emotion = predictions[0]['dominant_emotion'].upper()
+            results.append(dominant_emotion)
+
+        # Render the home page with the results
+        return render_template('index.html', results=results)
+
+    # If the request method is not POST, redirect to the home page
+    return redirect('/')
 
 # Define the live demo page
 @app.route('/live_demo')
