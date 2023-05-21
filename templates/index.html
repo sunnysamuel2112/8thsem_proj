@@ -9,13 +9,21 @@
     <form method="POST" enctype="multipart/form-data">
         <input type="file" name="image">
         <button type="submit" >Recognize</button>
+        <br>
+        <br>
+        <br>
     </form>
+
+    <form action="/live_demo">
+        <button type="submit">Live Demo</button>
+    </form>
+
     {% if results %}
         <h2>Results:</h2>
         <ul>
-        {% for result in results %}
-            <li>{{ result }}</li>
-        {% endfor %}
+            {% for result in results %}
+                <li>{{ result }}</li>
+            {% endfor %}
         </ul>
     {% endif %}
 </body>
