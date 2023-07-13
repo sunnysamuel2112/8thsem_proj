@@ -10,6 +10,8 @@ app = Flask(__name__)
 face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
 # Define the home page
+
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -30,13 +32,15 @@ def recognize():
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
         # Detect faces in the grayscale image
-        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+        faces = face_cascade.detectMultiScale(
+            gray, scaleFactor=1.3, minNeighbors=5)
 
         # Analyze each face using DeepFace
         results = []
         for (x, y, w, h) in faces:
             face_cropped = img[y:y+h, x:x+w]
-            predictions = DeepFace.analyze(face_cropped, actions=['emotion'], enforce_detection=False)
+            predictions = DeepFace.analyze(
+                face_cropped, actions=['emotion'], enforce_detection=False)
 
             # Add the dominant emotion to the results list
             dominant_emotion = predictions[0]['dominant_emotion'].upper()
@@ -49,11 +53,15 @@ def recognize():
     return redirect('/')
 
 # Define the live demo page
+
+
 @app.route('/live_demo')
 def live_demo():
     return render_template('live_demo.html')
 
 # Define the video feed function
+
+
 def generate_frames():
     # Start video capture
     cap = cv2.VideoCapture(0)
@@ -65,7 +73,8 @@ def generate_frames():
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # Detect faces in the grayscale frame
-        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+        faces = face_cascade.detectMultiScale(
+            gray, scaleFactor=1.3, minNeighbors=5)
 
         # Draw a rectangle around each face
         for (x, y, w, h) in faces:
@@ -80,7 +89,8 @@ def generate_frames():
             dominant_emotion = predictions[0]['dominant_emotion'].upper()
 
             # Adjust the position and font size of the text
-            cv2.putText(frame, dominant_emotion, (x+w+10, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+            cv2.putText(frame, dominant_emotion, (x+w+10, y),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
 
         # Encode the frame as a JPEG image
         ret, buffer = cv2.imencode('.jpg', frame)
@@ -88,16 +98,19 @@ def generate_frames():
 
         # Yield the frame to Flask
         yield (b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
     # Release the video capture and destroy the window
     cap.release()
     cv2.destroyAllWindows()
 
 # Define the video feed route
+
+
 @app.route('/video_feed')
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
